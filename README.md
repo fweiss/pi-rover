@@ -7,11 +7,11 @@ https://rpitips.com/python-libraries-pigpio/
 ## Wiring
 On Pi Zero, the two outermost pins near the SD card are +5V
 
-| GND | PURPLE | GND    |
+| GND | PURPLE | GND39  | GND14  |
 | +5V |
-| IN1 | GREEN  | GPIO26 |
-| ENA | YELLOW | GPIO19 |
-| IN2 | ORANGE | GPIO13 |
+| IN1 | GREEN  | GPIO26 | GPIO23 |
+| ENA | YELLOW | GPIO19 | GPIO18 |
+| IN2 | ORANGE | GPIO13 | GPIO24 |
 | CSA |
 | IN3 |
 | ENB |
