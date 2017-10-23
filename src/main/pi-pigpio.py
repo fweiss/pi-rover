@@ -10,8 +10,8 @@ PIN_FWD_A = 26
 PIN_REV_A = 13
 
 PIN_PWM_B = 18
-PIN_FWD_B = 23
-PIN_REV_B = 24
+PIN_FWD_B = 24 #23
+PIN_REV_B = 23 #24
 
 pi.set_mode(PIN_PWM_A, pigpio.OUTPUT)
 pi.set_mode(PIN_FWD_A, pigpio.OUTPUT)
@@ -39,7 +39,9 @@ def direction(fwd):
     pi.write(PIN_REV_B, 0 if fwd else 1)
 
 pi.set_PWM_frequency(PIN_PWM_A, 200)
+pi.set_PWM_range(PIN_PWM_A, 100)
 pi.set_PWM_frequency(PIN_PWM_B, 200)
+pi.set_PWM_range(PIN_PWM_B, 100)
 dir = 1
 
 while True:
