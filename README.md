@@ -45,3 +45,37 @@ Initally tried 100 Hz with python pigpio.
 | 27 | rough, glitched are more pronounced |
 | 200 | like 100 |
 
+## Camera
+
+Not remote: https://projects.raspberrypi.org/en/projects/getting-started-with-picamera
+
+http://www.techradar.com/how-to/computing/use-a-raspberry-pi-to-remotely-watch-your-home-1314466
+
+https://raspberrypi.stackexchange.com/questions/23182/how-to-stream-video-from-raspberry-pi-camera-and-watch-it-live
+
+v4l2-ctl --list-formats
+Failed to open /dev/video0: No such file or directory
+
+https://hackernoon.com/spy-your-pet-with-a-raspberry-pi-camera-server-e71bb74f79ea
+http://192.168.1.1:8081/
+
+With motion, do get a frame after sudo modprobe bcm2835-v4l2, but then motion crashes. No log messages.
+
+uncomment:
+/tmp/motion.log
+error opening file /var/lib/motion/01-20180103043953.avi 
+sudo chmod 777 /var/lib/motion
+works, choppy, dies after a while
+
+take 2 webcam:
+booted
+?? sudo modprobe bcm2835-v4l2
+sudo apt-get update && sudo apt-get install motion
+grep -e 'start_motion_daemon=yes' /etc/default/motion
+sudo service motion start
+
+nc -zv raspberrypi 8081
+
+http://raspberrypi:8081/
+about 1 fps
+about 3 sec lag
