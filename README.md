@@ -66,3 +66,10 @@ uncomment:
 error opening file /var/lib/motion/01-20180103043953.avi 
 sudo chmod 777 /var/lib/motion
 works, choppy, dies after a while
+
+take 2 (motion)
+
+sudo modprobe bcm2835-v4l2
+sudo service motion start .
+http://raspberrypi:8081
+unable to open video device
