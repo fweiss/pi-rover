@@ -66,16 +66,3 @@ uncomment:
 error opening file /var/lib/motion/01-20180103043953.avi 
 sudo chmod 777 /var/lib/motion
 works, choppy, dies after a while
-
-take 2 webcam:
-booted
-?? sudo modprobe bcm2835-v4l2
-sudo apt-get update && sudo apt-get install motion
-grep -e 'start_motion_daemon=yes' /etc/default/motion
-sudo service motion start
-
-nc -zv raspberrypi 8081
-
-http://raspberrypi:8081/
-about 1 fps
-about 3 sec lag
