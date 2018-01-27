@@ -47,8 +47,6 @@ Initally tried 100 Hz with python pigpio.
 
 ## Camera
 
-Not remote: https://projects.raspberrypi.org/en/projects/getting-started-with-picamera
-
 http://www.techradar.com/how-to/computing/use-a-raspberry-pi-to-remotely-watch-your-home-1314466
 
 https://raspberrypi.stackexchange.com/questions/23182/how-to-stream-video-from-raspberry-pi-camera-and-watch-it-live
@@ -58,8 +56,6 @@ Failed to open /dev/video0: No such file or directory
 
 https://hackernoon.com/spy-your-pet-with-a-raspberry-pi-camera-server-e71bb74f79ea
 http://192.168.1.1:8081/
-
-With motion, do get a frame after sudo modprobe bcm2835-v4l2, but then motion crashes. No log messages.
 
 uncomment:
 /tmp/motion.log
@@ -72,4 +68,10 @@ take 2 (motion)
 sudo modprobe bcm2835-v4l2
 sudo service motion start .
 http://raspberrypi:8081
-unable to open video device
+
+~1 fps
+~2 sec lag
+
+### Notes
+
+Not remote: https://projects.raspberrypi.org/en/projects/getting-started-with-picamera
