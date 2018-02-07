@@ -42,16 +42,16 @@ pi.set_PWM_frequency(PIN_PWM_A, 200)
 pi.set_PWM_range(PIN_PWM_A, 100)
 pi.set_PWM_frequency(PIN_PWM_B, 200)
 pi.set_PWM_range(PIN_PWM_B, 100)
-dir = 1
+dir = 0
 
 while True:
     direction(dir)
     dir = 0 if dir else 1
     for i in range(5, 100, 5):
         pi.set_PWM_dutycycle(PIN_PWM_A, i)
-        pi.set_PWM_dutycycle(PIN_PWM_B, i)
+        pi.set_PWM_dutycycle(PIN_PWM_B, i * 0.70)
         time.sleep(0.1)
     for i in range(100, 5, -5):
         pi.set_PWM_dutycycle(PIN_PWM_A, i)
-        pi.set_PWM_dutycycle(PIN_PWM_B, i)
+        pi.set_PWM_dutycycle(PIN_PWM_B, i * 0.70)
         time.sleep(0.1)

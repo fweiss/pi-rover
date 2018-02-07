@@ -1,3 +1,21 @@
+# pi-rover
+
+A POC for robotic vehicle on Rasperry Pi Zero and Python
+
+## Running pi-gpio
+This is the gpio version.
+
+Update on pi:
+
+scp -r ./src pi@192.168.1.116:/home/pi/Projects/pi-rover
+
+Shell into the pi
+cd /home/pi/Projects/pi-rover
+sudo pigpiod
+python src/main/pi-pigpio.py
+
+To stop: ctrl+c
+
 https://github.com/Multibit-Legacy/trezorj/wiki/Configuring-Intellij-to-use-Python-and-deploy-to-the-Raspberry-Pi
 
 RPi.GPIO uses software PWM
@@ -19,10 +37,6 @@ CK1122 to Pi Zero
 | ENB | GRAY   | GPIO18 |
 | IN4 | WHITE  | GPIO24 |
 | CSB | BROWN  | NC     |
-
-## Running pi-gpio
-sudo pigpiod
-python src/main/pi-rover.py
 
 ## Raspberry Pi
 Well, it's kind of neat to have a full OS, but there are some downsides:
@@ -71,6 +85,10 @@ http://raspberrypi:8081
 
 ~1 fps
 ~2 sec lag
+
+## Pan and tilt servos
+sudo mount -t cifs //Franks-MacBook-Pro.local/RPI /mnt/mac -o user=frankw,uid=pi
+In Mac File Sharing > Options, need to allow user for Windows File Sharing
 
 ### Notes
 
