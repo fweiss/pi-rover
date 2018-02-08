@@ -87,8 +87,20 @@ http://raspberrypi:8081
 ~2 sec lag
 
 ## Pan and tilt servos
-sudo mount -t cifs //Franks-MacBook-Pro.local/RPI /mnt/mac -o user=frankw,uid=pi
+sudo apt install python-smbus
+
+sudo vi /boot/config.txt
+sudo raspi-config
+peripherals, enable i2c
+
+http://www.instructables.com/id/How-to-share-files-between-Mac-OSX-and-Raspberry-P/
+
+## File sharing
+In order to use IntelliJ on Mac, set up a share.
+
 In Mac File Sharing > Options, need to allow user for Windows File Sharing
+
+sudo mount -t cifs //Franks-MacBook-Pro.local/RPI /mnt/mac -o user=frankw,uid=pi
 
 ### Notes
 
