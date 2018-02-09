@@ -100,7 +100,9 @@ In order to use IntelliJ on Mac, set up a share.
 
 In Mac File Sharing > Options, need to allow user for Windows File Sharing
 
-sudo mount -t cifs //Franks-MacBook-Pro.local/RPI /mnt/mac -o user=frankw,uid=pi
+Tip: copy the following to /home/pi/connect-mac:
+
+sudo mount -t cifs //Franks-MacBook-Pro.local/RPI Projects/RPI -o user=frankw,uid=pi
 
 ### Notes
 
