@@ -1,16 +1,28 @@
+import time
 import smbus
 bus = smbus.SMBus(1)
 
 MODE1 = 0x00
+MODE1_LOW_POWER = 0x10
+MODE1_AUTO_INCREMENT = 0x20
+
 MODE2 = 0x01
+MODE2_OUT_TOTEM = 0x04
+
 PRE_SCALE = 0xfe
-LED0_ON_L = 0x06
-LED0_OFF_L = 0x08
-LED1_ON_L = 0x0a
-LED1_OFF_L = 0x0c
+
+PAN_REG_ON = 0x06
+PAN_REG_OFF = 0x08
+TILT_REG_ON = 0x0a
+TILT_REG_OFF = 0x0c
 
 PWM_200HZ = 30
-PWM_50HZ = 121
+PWM_50HZ = 121 # (25000000 / (4096 * 50)) - 1
+
+# for SC90, the PWM values are:
+#  -90 1.0 ms 1.0*4096/20 205
+#    0 1.5 ms 1.5*4096/20 307
+#  +90 2.0 ms 2.0*4096/20 410
 
 addr = 0x40
 
@@ -21,8 +33,8 @@ bus.write_byte_data(addr, MODE1, 0x20)
 print(bus.read_byte_data(addr, MODE1))
 
 def pulse_width(off):
-    start = bus.read_word_data(addr,LED0_ON_L)
-    stop = bus.read_word_data(addr, LED0_OFF_L)
+    start = bus.read_word_data(addr, PAN_REG_ON)
+    stop = bus.read_word_data(addr, PAN_REG_OFF)
     duty = (stop - start) / 4096.0
     prescale = bus.read_byte_data(addr, PRE_SCALE)
     osc_clock = 25000000.0
@@ -30,13 +42,25 @@ def pulse_width(off):
     pulse_width_ms = duty / pwm_freq * 1000.0
     return pulse_width_ms
 
-while True:
-    [ pan, tilt ] = map(int, raw_input().strip().split(" "))
+def interactive():
+    while True:
+        cmd = raw_input("Enter pan, tilt (0-4095): ")
+        # [ pan, tilt ] = map(int, raw_input().strip().split(" "))
+        [ pan, tilt ] = map(int, cmd.strip().split(" "))
 
-    bus.write_word_data(addr, LED0_ON_L, 0)
-    bus.write_word_data(addr, LED0_OFF_L, pan)
-    print(pulse_width(pan))
+        bus.write_word_data(addr, PAN_REG_ON, 0)
+        bus.write_word_data(addr, PAN_REG_OFF, pan)
+        print(pulse_width(pan))
 
-    bus.write_word_data(addr, LED1_ON_L, 0)
-    bus.write_word_data(addr, LED1_OFF_L, tilt)
+        bus.write_word_data(addr, TILT_REG_ON, 0)
+        bus.write_word_data(addr, TILT_REG_OFF, tilt)
 
+def steps():
+    while True:
+        for pan in [ 220, 300, 400, 500, 300, 120, 650, 400 ]:
+            bus.write_word_data(addr, PAN_REG_ON, 0)
+            bus.write_word_data(addr, PAN_REG_OFF, pan)
+            print(pulse_width(pan))
+            time.sleep(2)
+
+interactive()

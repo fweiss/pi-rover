@@ -2,6 +2,57 @@
 
 A POC for robotic vehicle on Rasperry Pi Zero and Python
 
+## Pi Zero W basics
+Login via ssh:
+
+``ssh pi:raspberry@raspberry.local``
+
+## File sharing
+In order to use IntelliJ on Mac, set up a share.
+
+In Mac File Sharing > Options, need to allow user for Windows File Sharing
+
+Tip: copy the following to /home/pi/connect-mac:
+
+sudo mount -t cifs //Franks-MacBook-Pro.local/RPI Projects/RPI -o user=frankw,uid=pi
+
+Determine OS X hostname: ``hostname -a``
+
+Then on Pi, ls ~/Projects/RPI will show empty directories.
+
+Then cd ~/Projects/RPI/pi-rover and the project directory.
+
+Then python src/main/pan-tilt.py
+
+## Hardware
+- Raspberry Pi Zero W V1.1
+- Kingston SDC4/16GB Micro SD card
+- Sparkfun Pi Servo Shield - DEV-14328
+- Pan-tilt kit
+- Tower Pro Micro Servo SG90 9 g
+
+### SG90 specs
+5 V
+20 ms (50 Hz) PWM base
+Pulse width encoding:
+1.0 ms: -90 degrees CCW (left)
+1.5 ms: 0 degrees (middle)
+2.0 ms: 90 degrees CW (right)
+
+Note: The linearity of these cheap servos is very poor.
+
+### PCA9685 specs
+Designed for LED PWM control, but can be used for servo, for 16 output channels.
+PWM control for each channel is 12-bit (4016 steps).
+
+Drive capability at 5 V:
+- 25 mA sink open drain/totem pole
+- 10 mA source totem pole
+
+Internal 25 MHz oscillator.
+Power on reset sets output to LOW.
+
+
 ## Running pi-gpio
 This is the gpio version.
 
@@ -95,15 +146,10 @@ peripherals, enable i2c
 
 http://www.instructables.com/id/How-to-share-files-between-Mac-OSX-and-Raspberry-P/
 
-## File sharing
-In order to use IntelliJ on Mac, set up a share.
-
-In Mac File Sharing > Options, need to allow user for Windows File Sharing
-
-Tip: copy the following to /home/pi/connect-mac:
-
-sudo mount -t cifs //Franks-MacBook-Pro.local/RPI Projects/RPI -o user=frankw,uid=pi
+PWM prescale of 121 results in 54.6 Hz
 
 ### Notes
 
 Not remote: https://projects.raspberrypi.org/en/projects/getting-started-with-picamera
+
+
