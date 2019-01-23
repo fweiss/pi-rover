@@ -10,7 +10,9 @@ Login via ssh:
 ## File sharing
 In order to use IntelliJ on Mac, set up a share.
 
-In Mac File Sharing > Options, need to allow user for Windows File Sharing
+In Mac File Sharing > Options, need to:
+ - allow RPI filder to be shared
+ - allow user for Windows File Sharing
 
 Tip: copy the following to /home/pi/connect-mac:
 
