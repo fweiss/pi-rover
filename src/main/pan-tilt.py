@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import time
 import smbus
 bus = smbus.SMBus(1)
@@ -27,10 +29,12 @@ PWM_50HZ = 121 # (25000000 / (4096 * 50)) - 1
 addr = 0x40
 
 print(bus.read_byte_data(addr, MODE1))
+print(bus.read_byte_data(addr, MODE2))
 bus.write_byte_data(addr, MODE1, 0x10)
 bus.write_byte_data(addr, PRE_SCALE, PWM_50HZ)
-bus.write_byte_data(addr, MODE1, 0x20)
+bus.write_byte_data(addr, MODE1, MODE1_AUTO_INCREMENT) # because we'll be using bus.write.word_data
 print(bus.read_byte_data(addr, MODE1))
+bus.write_byte_data(addr, MODE2, MODE2_OUT_TOTEM)
 
 def pulse_width(off):
     start = bus.read_word_data(addr, PAN_REG_ON)
@@ -44,7 +48,7 @@ def pulse_width(off):
 
 def interactive():
     while True:
-        cmd = raw_input("Enter pan, tilt (0-4095): ")
+        cmd = input("Enter pan, tilt (0-4095): ")
         # [ pan, tilt ] = map(int, raw_input().strip().split(" "))
         [ pan, tilt ] = map(int, cmd.strip().split(" "))
 
