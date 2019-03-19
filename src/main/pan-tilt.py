@@ -87,9 +87,6 @@ def steps(adapter):
     while True:
         for pan in [ 220, 300, 400, 500, 300, 120, 650, 400 ]:
             adapter.moveTo(pan, 0)
-#             bus.write_word_data(addr, PAN_REG_ON, 0)
-#             bus.write_word_data(addr, PAN_REG_OFF, pan)
-#             print(pulse_width(pan))
             time.sleep(.2)
 
 main()
