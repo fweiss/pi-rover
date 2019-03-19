@@ -44,9 +44,11 @@ PWM_50HZ = 121 # (25000000 / (4096 * 50)) - 1
 
 class PanTilt:
     def moveTo(self, pan, tilt):
-        global addr, PAN_REG_OFF, PAN_REG_ON
+        global addr, PAN_REG_OFF, PAN_REG_ON, TILT_REG_ON, TILT_REG_OFF
         bus.write_word_data(addr, PAN_REG_ON, 0)
         bus.write_word_data(addr, PAN_REG_OFF, pan)
+        bus.write_word_data(addr, TILT_REG_ON, 0)
+        bus.write_word_data(addr, TILT_REG_OFF, tilt)
 
 def initialize_channels():
     print(bus.read_byte_data(addr, MODE1))
@@ -84,10 +86,10 @@ def interactive():
         bus.write_word_data(addr, TILT_REG_OFF, tilt)
 
 def steps(adapter):
-    path = [ 220, 300, 400, 500, 300, 120, 650, 400 ]
+    path = [ [ 220, 320 ], [ 300, 400 ], [ 400, 400 ], [ 500, 300 ], [ 300, 320 ], [ 120, 380 ], [ 650, 380 ], [ 400, 320 ] ]
     while True:
-        for pan in path:
-            adapter.moveTo(pan, 0)
+        for (pan, tilt) in path:
+            adapter.moveTo(pan, tilt)
             time.sleep(.2)
 
 main()
