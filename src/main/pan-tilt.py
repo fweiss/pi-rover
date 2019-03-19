@@ -3,7 +3,14 @@
 import time
 import smbus
 
-bus = smbus.SMBus(1)
+I2C_BUS_NUMBER = 1
+
+# with none of the 6 address jumpers closed, base address is
+# 1 0 0 0 0 0 0 W
+# except that library manages W bit
+addr = 0x40
+
+bus = smbus.SMBus(I2C_BUS_NUMBER)
 
 def main():
     # interactive()
@@ -30,8 +37,6 @@ PWM_50HZ = 121 # (25000000 / (4096 * 50)) - 1
 #  -90 1.0 ms 1.0*4096/20 205
 #    0 1.5 ms 1.5*4096/20 307
 #  +90 2.0 ms 2.0*4096/20 410
-
-addr = 0x40
 
 print(bus.read_byte_data(addr, MODE1))
 print(bus.read_byte_data(addr, MODE2))
@@ -72,7 +77,7 @@ def steps():
         for pan in [ 220, 300, 400, 500, 300, 120, 650, 400 ]:
             bus.write_word_data(addr, PAN_REG_ON, 0)
             bus.write_word_data(addr, PAN_REG_OFF, pan)
-            print(pulse_width(pan))
+#             print(pulse_width(pan))
             time.sleep(.2)
 
 main()
