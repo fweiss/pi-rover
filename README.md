@@ -45,7 +45,7 @@ Note: The linearity of these cheap servos is very poor.
 
 ### PCA9685 specs
 Designed for LED PWM control, but can be used for servo, for 16 output channels.
-PWM control for each channel is 12-bit (4016 steps).
+PWM control for each channel is 12-bit (4096 steps).
 
 Drive capability at 5 V:
 - 25 mA sink open drain/totem pole
