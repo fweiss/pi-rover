@@ -84,8 +84,9 @@ def interactive():
         bus.write_word_data(addr, TILT_REG_OFF, tilt)
 
 def steps(adapter):
+    path = [ 220, 300, 400, 500, 300, 120, 650, 400 ]
     while True:
-        for pan in [ 220, 300, 400, 500, 300, 120, 650, 400 ]:
+        for pan in path:
             adapter.moveTo(pan, 0)
             time.sleep(.2)
 
