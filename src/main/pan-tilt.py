@@ -12,7 +12,9 @@ addr = 0x40
 
 bus = smbus.SMBus(I2C_BUS_NUMBER)
 
-def main():
+def main():  
+    initialize_channels()
+    
     # interactive()
     steps()
 
@@ -38,16 +40,17 @@ PWM_50HZ = 121 # (25000000 / (4096 * 50)) - 1
 #    0 1.5 ms 1.5*4096/20 307
 #  +90 2.0 ms 2.0*4096/20 410
 
-print(bus.read_byte_data(addr, MODE1))
-print(bus.read_byte_data(addr, MODE2))
-
-bus.write_byte_data(addr, MODE1, 0x10)
-bus.write_byte_data(addr, PRE_SCALE, PWM_50HZ)
-bus.write_byte_data(addr, MODE1, MODE1_AUTO_INCREMENT) # because we'll be using bus.write.word_data
-
-print(bus.read_byte_data(addr, MODE1))
-
-bus.write_byte_data(addr, MODE2, MODE2_OUT_TOTEM)
+def initialize_channels():
+    print(bus.read_byte_data(addr, MODE1))
+    print(bus.read_byte_data(addr, MODE2))
+    
+    bus.write_byte_data(addr, MODE1, 0x10)
+    bus.write_byte_data(addr, PRE_SCALE, PWM_50HZ)
+    bus.write_byte_data(addr, MODE1, MODE1_AUTO_INCREMENT) # because we'll be using bus.write.word_data
+    
+    print(bus.read_byte_data(addr, MODE1))
+    
+    bus.write_byte_data(addr, MODE2, MODE2_OUT_TOTEM)
 
 def pulse_width(off):
     start = bus.read_word_data(addr, PAN_REG_ON)
