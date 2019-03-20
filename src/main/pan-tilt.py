@@ -16,8 +16,9 @@ def main():
     initialize_channels()
     adapter = PanTilt()
     
-    # interactive()
-    steps(adapter)
+    interactive(adapter)
+#     steps(adapter)
+#     sweep(adapter)
 
 
 MODE1 = 0x00
@@ -46,9 +47,13 @@ class PanTilt:
     def moveTo(self, pan, tilt):
         global addr, PAN_REG_OFF, PAN_REG_ON, TILT_REG_ON, TILT_REG_OFF
         bus.write_word_data(addr, PAN_REG_ON, 0)
-        bus.write_word_data(addr, PAN_REG_OFF, pan)
+        bus.write_word_data(addr, PAN_REG_OFF, self.mapPan(pan))
         bus.write_word_data(addr, TILT_REG_ON, 0)
-        bus.write_word_data(addr, TILT_REG_OFF, tilt)
+        bus.write_word_data(addr, TILT_REG_OFF, self.mapTilt(tilt))
+    def mapPan(self, pan):
+        return pan + 260;
+    def mapTilt(self, tilt):
+        return tilt + 350
 
 def initialize_channels():
     print(bus.read_byte_data(addr, MODE1))
@@ -72,18 +77,11 @@ def pulse_width(off):
     pulse_width_ms = duty / pwm_freq * 1000.0
     return pulse_width_ms
 
-def interactive():
+def interactive(adapter):
     while True:
         cmd = input("Enter pan, tilt (0-4095): ")
-        # [ pan, tilt ] = map(int, raw_input().strip().split(" "))
-        [ pan, tilt ] = map(int, cmd.strip().split(" "))
-
-        bus.write_word_data(addr, PAN_REG_ON, 0)
-        bus.write_word_data(addr, PAN_REG_OFF, pan)
-        print(pulse_width(pan))
-
-        bus.write_word_data(addr, TILT_REG_ON, 0)
-        bus.write_word_data(addr, TILT_REG_OFF, tilt)
+        [ pan, tilt ] = map(int, cmd.strip().split(","))
+        adapter.moveTo(pan, tilt)
 
 def steps(adapter):
     path = [ 
@@ -101,5 +99,16 @@ def steps(adapter):
 #             print("{}: {}".format(pan, tilt))
             adapter.moveTo(pan, tilt)
             time.sleep(.2)
+            
+def sweep(adapter):
+    while True:
+        for pan in range(80, 320):
+            print("pan: {}".format(pan))
+            adapter.moveTo(pan, 0)
+            time.sleep(.1)
+        for tilt in range(200,450):
+            print("tilt: {}".format(pan))
+            adapter.moveTo(0, tilt)
+            time.sleep(.1)
 
 main()
