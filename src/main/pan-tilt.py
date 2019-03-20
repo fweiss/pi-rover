@@ -14,7 +14,7 @@ bus = smbus.SMBus(I2C_BUS_NUMBER)
 
 def main():  
     initialize_channels()
-    adapter = PanTilt()
+    adapter = PanTilt(bus, addr)
     
     interactive(adapter)
 #     steps(adapter)
@@ -44,12 +44,15 @@ PWM_50HZ = 121 # (25000000 / (4096 * 50)) - 1
 #  +90 2.0 ms 2.0*4096/20 410
 
 class PanTilt:
+    def __init__(self, bus, addr):
+        self.bus = bus
+        self.addr = addr
     def moveTo(self, pan, tilt):
-        global addr, PAN_REG_OFF, PAN_REG_ON, TILT_REG_ON, TILT_REG_OFF
-        bus.write_word_data(addr, PAN_REG_ON, 0)
-        bus.write_word_data(addr, PAN_REG_OFF, self.mapPan(pan))
-        bus.write_word_data(addr, TILT_REG_ON, 0)
-        bus.write_word_data(addr, TILT_REG_OFF, self.mapTilt(tilt))
+        global PAN_REG_OFF, PAN_REG_ON, TILT_REG_ON, TILT_REG_OFF
+        self.bus.write_word_data(self.addr, PAN_REG_ON, 0)
+        self.bus.write_word_data(self.addr, PAN_REG_OFF, self.mapPan(pan))
+        self.bus.write_word_data(self.addr, TILT_REG_ON, 0)
+        self.bus.write_word_data(self.addr, TILT_REG_OFF, self.mapTilt(tilt))
     def mapPan(self, pan):
         return pan + 260;
     def mapTilt(self, tilt):
