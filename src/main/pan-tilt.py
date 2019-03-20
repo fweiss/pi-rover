@@ -47,14 +47,16 @@ class PanTilt:
     def __init__(self, bus, addr):
         self.bus = bus
         self.addr = addr
+    def writeWord(self, register, value):
+        self.bus.write_word_data(self.addr, register, value)
     def moveTo(self, pan, tilt):
         global PAN_REG_OFF, PAN_REG_ON, TILT_REG_ON, TILT_REG_OFF
-        self.bus.write_word_data(self.addr, PAN_REG_ON, 0)
-        self.bus.write_word_data(self.addr, PAN_REG_OFF, self.mapPan(pan))
-        self.bus.write_word_data(self.addr, TILT_REG_ON, 0)
-        self.bus.write_word_data(self.addr, TILT_REG_OFF, self.mapTilt(tilt))
+        self.writeWord(PAN_REG_ON, 0)
+        self.writeWord(PAN_REG_OFF, self.mapPan(pan))
+        self.writeWord(TILT_REG_ON, 0)
+        self.writeWord(TILT_REG_OFF, self.mapTilt(tilt))
     def mapPan(self, pan):
-        return pan + 260;
+        return pan + 250;
     def mapTilt(self, tilt):
         return tilt + 350
 
