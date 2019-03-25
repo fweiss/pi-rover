@@ -14,14 +14,17 @@ addr = 0x40
 
 bus = smbus.SMBus(I2C_BUS_NUMBER)
 
-def main():  
-    initialize_channels()
-    adapter = PanTilt(bus, addr)
-    
-#     interactive(adapter)
-#     steps(adapter)
-#     sweep(adapter)
-    calibrate(adapter)
+def main():
+    try: 
+        initialize_channels()
+        adapter = PanTilt(bus, addr)
+        
+    #     interactive(adapter)
+        steps(adapter)
+    #     sweep(adapter)
+    #     calibrate(adapter)
+    except KeyboardInterrupt as err:
+        bus.write_byte_data(addr, MODE2, 0) # hi-z
 
 MODE1 = 0x00
 MODE1_LOW_POWER = 0x10
@@ -145,7 +148,7 @@ def steps(adapter):
         [ 0, -100 ]
     ]
     while True:
-        for (pan, tilt) in path4:
+        for (pan, tilt) in path0:
             adapter.moveTo(pan, tilt)
             time.sleep(.4)
             
