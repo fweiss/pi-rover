@@ -2,6 +2,8 @@
 
 import time
 import smbus
+import tty
+import sys
 
 I2C_BUS_NUMBER = 1
 
@@ -16,10 +18,10 @@ def main():
     initialize_channels()
     adapter = PanTilt(bus, addr)
     
-    interactive(adapter)
+#     interactive(adapter)
 #     steps(adapter)
 #     sweep(adapter)
-
+    calibrate(adapter)
 
 MODE1 = 0x00
 MODE1_LOW_POWER = 0x10
@@ -47,6 +49,10 @@ class PanTilt:
     def __init__(self, bus, addr):
         self.bus = bus
         self.addr = addr
+#         self.bias = [ 250, 300 ]
+        self.bias = [ 190, 357 ]
+    def setBias(self, bias):
+        self.bias = bias
     def writeWord(self, register, value):
         self.bus.write_word_data(self.addr, register, value)
     def moveTo(self, pan, tilt):
@@ -56,9 +62,9 @@ class PanTilt:
         self.writeWord(TILT_REG_ON, 0)
         self.writeWord(TILT_REG_OFF, self.mapTilt(tilt))
     def mapPan(self, pan):
-        return pan + 250;
+        return pan + self.bias[0];
     def mapTilt(self, tilt):
-        return tilt + 350
+        return tilt + self.bias[1]
 
 def initialize_channels():
     print(bus.read_byte_data(addr, MODE1))
@@ -88,7 +94,29 @@ def interactive(adapter):
         [ pan, tilt ] = map(int, cmd.strip().split(","))
         adapter.moveTo(pan, tilt)
 
+def calibrate(adapter):
+#     adapter.setBias([ 200, 200 ])
+    pan = 0
+    tilt = 0
+    print("use WASD keys to move arm")
+    while True:
+        adapter.moveTo(pan,tilt)
+#         cmd = input("{},{}:".format(pan, tilt))
+        print("{},{}:".format(pan, tilt))
+        cmd = getChr()
+        print("\n")
+        if cmd == "w":
+            tilt -= 1
+        if cmd == "a":
+            pan -= 1
+        if cmd == "s":
+            tilt += 1
+        if cmd == "d":
+            pan += 1
+#         adapter.setBias([ pan, tilt ])
+        
 def steps(adapter):
+#     adapter.setBias([ 0, 0 ])
     path = [ 
         [ 220, 320 ], 
         [ 300, 400 ], 
@@ -99,21 +127,44 @@ def steps(adapter):
         [ 650, 380 ], 
         [ 400, 320 ] 
     ]
+    path0 = [
+        [ -30, 20 ], 
+        [ 50, 10 ], 
+        [ 150, 100 ], 
+        [ 250, 0 ], 
+        [ 50, 20 ], 
+        [ -130, 80 ], 
+        [ 400, 80 ], 
+        [ 150, 20 ] 
+    ]
+    path4 = [
+        [ 0, 0 ],
+        [ -100, 0 ],
+        [ 100, 0 ],
+        [ 0, 100 ],
+        [ 0, -100 ]
+    ]
     while True:
-        for (pan, tilt) in path:
-#             print("{}: {}".format(pan, tilt))
+        for (pan, tilt) in path4:
             adapter.moveTo(pan, tilt)
-            time.sleep(.2)
+            time.sleep(.4)
             
 def sweep(adapter):
     while True:
-        for pan in range(80, 320):
+        for pan in range(-100, 100):
             print("pan: {}".format(pan))
             adapter.moveTo(pan, 0)
             time.sleep(.1)
-        for tilt in range(200,450):
+        for tilt in range(-100,100):
             print("tilt: {}".format(pan))
             adapter.moveTo(0, tilt)
             time.sleep(.1)
 
+def getChr():
+    tty.setraw(sys.stdin.fileno())
+    chr = sys.stdin.read(1)
+    sys.stdout.write("\r")
+    if ord(chr) == 3: # ETX
+        exit(1)
+    return chr
 main()
