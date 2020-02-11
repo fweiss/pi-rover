@@ -1,10 +1,9 @@
 import dbus
 
+from exceptions import InvalidArgsException
+
 LE_ADVERTISEMENT_IFACE = 'org.bluez.LEAdvertisement1'
 DBUS_PROP_IFACE =    'org.freedesktop.DBus.Properties'
-
-class InvalidArgsException(dbus.exceptions.DBusException):
-    _dbus_error_name = 'org.freedesktop.DBus.Error.InvalidArgs'
 
 class Advertisement(dbus.service.Object):
     PATH_BASE = '/org/bluez/example/advertisement'
