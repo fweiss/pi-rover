@@ -17,6 +17,7 @@ import sys
 
 from random import randint
 
+from exceptions import NotSupportedException, InvalidValueLengthException, NotPermittedException
 from advertisement import Advertisement
 from service import Service
 from characteristic import Characteristic
@@ -35,21 +36,21 @@ GATT_DESC_IFACE =    'org.bluez.GattDescriptor1'
 # LE_ADVERTISEMENT_IFACE = 'org.bluez.LEAdvertisement1'
 LE_ADVERTISING_MANAGER_IFACE = 'org.bluez.LEAdvertisingManager1'
 
-class InvalidArgsException(dbus.exceptions.DBusException):
-    _dbus_error_name = 'org.freedesktop.DBus.Error.InvalidArgs'
-
-class NotSupportedException(dbus.exceptions.DBusException):
-    _dbus_error_name = 'org.bluez.Error.NotSupported'
-
-class NotPermittedException(dbus.exceptions.DBusException):
-    _dbus_error_name = 'org.bluez.Error.NotPermitted'
-
-class InvalidValueLengthException(dbus.exceptions.DBusException):
-    _dbus_error_name = 'org.bluez.Error.InvalidValueLength'
-
-class FailedException(dbus.exceptions.DBusException):
-    _dbus_error_name = 'org.bluez.Error.Failed'
-
+# class InvalidArgsException(dbus.exceptions.DBusException):
+#     _dbus_error_name = 'org.freedesktop.DBus.Error.InvalidArgs'
+#
+# class NotSupportedException(dbus.exceptions.DBusException):
+#     _dbus_error_name = 'org.bluez.Error.NotSupported'
+#
+# class NotPermittedException(dbus.exceptions.DBusException):
+#     _dbus_error_name = 'org.bluez.Error.NotPermitted'
+#
+# class InvalidValueLengthException(dbus.exceptions.DBusException):
+#     _dbus_error_name = 'org.bluez.Error.InvalidValueLength'
+#
+# class FailedException(dbus.exceptions.DBusException):
+#     _dbus_error_name = 'org.bluez.Error.Failed'
+#
 
 class Application(dbus.service.Object):
     """
