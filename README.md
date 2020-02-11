@@ -168,3 +168,5 @@ https://stackoverflow.com/questions/41351514/leadvertisingmanager1-missing-from-
 https://github.com/luetzel/bluez/blob/master/test/example-advertisement
 
 Get bluez version: ``bluetoothctl --version``, currently 5.5.0
+
+Get example code, including python/dbus, from the bluez repo in kernel.org: https://git.kernel.org/pub/scm/bluetooth/bluez.git
