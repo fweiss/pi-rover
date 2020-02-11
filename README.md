@@ -150,8 +150,21 @@ http://www.instructables.com/id/How-to-share-files-between-Mac-OSX-and-Raspberry
 
 PWM prescale of 121 results in 54.6 Hz
 
-### Notes
+## Bluetooth
+Got a linux image with BT support baked with the yocto-pi-vm project.
+Haven't been able to get hci0 up during startup, so added a script ``setup-bt.sh`` to run manually after boot.
+
+The ``dbus-bt.py`` script successfully advertises, but not much else yet.
+
+> The name is "TESTADVERTISEMENT"
+
+
+## Notes
 
 Not remote: https://projects.raspberrypi.org/en/projects/getting-started-with-picamera
 
+https://stackoverflow.com/questions/41351514/leadvertisingmanager1-missing-from-dbus-objectmanager-getmanagedobjects
 
+https://github.com/luetzel/bluez/blob/master/test/example-advertisement
+
+Get bluez version: ``bluetoothctl --version``, currently 5.5.0
