@@ -16,10 +16,10 @@ bus = smbus.SMBus(I2C_BUS_NUMBER)
 
 def main():
     try: 
-        initialize_channels()
         adapter = PanTilt(bus, addr)
-        
-    #     interactive(adapter)
+        adapter.initialize_channels()
+
+        #     interactive(adapter)
         steps(adapter)
     #     sweep(adapter)
     #     calibrate(adapter)
@@ -60,6 +60,7 @@ class PanTilt:
         self.bus.write_word_data(self.addr, register, value)
     def moveTo(self, pan, tilt):
         global PAN_REG_OFF, PAN_REG_ON, TILT_REG_ON, TILT_REG_OFF
+        print("move: {} {}".format(pan, tilt))
         self.writeWord(PAN_REG_ON, 0)
         self.writeWord(PAN_REG_OFF, self.mapPan(pan))
         self.writeWord(TILT_REG_ON, 0)
@@ -68,18 +69,17 @@ class PanTilt:
         return pan + self.bias[0];
     def mapTilt(self, tilt):
         return tilt + self.bias[1]
+    def initialize_channels(self):
+        print(bus.read_byte_data(addr, MODE1))
+        print(bus.read_byte_data(addr, MODE2))
 
-def initialize_channels():
-    print(bus.read_byte_data(addr, MODE1))
-    print(bus.read_byte_data(addr, MODE2))
-    
-    bus.write_byte_data(addr, MODE1, 0x10)
-    bus.write_byte_data(addr, PRE_SCALE, PWM_50HZ)
-    bus.write_byte_data(addr, MODE1, MODE1_AUTO_INCREMENT) # because we'll be using bus.write.word_data
-    
-    print(bus.read_byte_data(addr, MODE1))
-    
-    bus.write_byte_data(addr, MODE2, MODE2_OUT_TOTEM)
+        bus.write_byte_data(addr, MODE1, 0x10)
+        bus.write_byte_data(addr, PRE_SCALE, PWM_50HZ)
+        bus.write_byte_data(addr, MODE1, MODE1_AUTO_INCREMENT) # because we'll be using bus.write.word_data
+
+        print(bus.read_byte_data(addr, MODE1))
+
+        bus.write_byte_data(addr, MODE2, MODE2_OUT_TOTEM)
 
 def pulse_width(off):
     start = bus.read_word_data(addr, PAN_REG_ON)
@@ -170,4 +170,7 @@ def getChr():
     if ord(chr) == 3: # ETX
         exit(1)
     return chr
-main()
+
+if __name__ == '__main__':
+    main()
+

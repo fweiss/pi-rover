@@ -1,8 +1,24 @@
 import dbus
+import smbus
+
 
 from service import Service
 from characteristic import Characteristic
 from descriptor import Descriptor, CharacteristicUserDescriptionDescriptor
+
+from pan_tilt import PanTilt
+
+I2C_BUS_NUMBER = 1
+
+# with none of the 6 address jumpers closed, base address is
+# 1 0 0 0 0 0 0 W
+# except that library manages W bit
+addr = 0x40
+
+bus = smbus.SMBus(I2C_BUS_NUMBER)
+adapter = PanTilt(bus, addr)
+adapter.initialize_channels()
+print("pan tilt initialized")
 
 class TestService(Service):
     """
@@ -44,7 +60,9 @@ class TestCharacteristic(Characteristic):
     def WriteValue(self, value, options):
         print('TestCharacteristic Write: ' + repr(value))
         self.value = value
-
+        pan = int(value[0])
+        tilt = int(value[1])
+        adapter.moveTo(pan, tilt)
 
 class TestDescriptor(Descriptor):
     """
