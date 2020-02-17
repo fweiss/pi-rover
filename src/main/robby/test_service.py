@@ -1,3 +1,5 @@
+import struct
+
 import dbus
 import smbus
 
@@ -57,11 +59,18 @@ class TestCharacteristic(Characteristic):
         print('TestCharacteristic Read: ' + repr(self.value))
         return self.value
 
+    # assume little endian order
+    # pan and tilt are each 16 bits, but range is only 12 bits
     def WriteValue(self, value, options):
         print('TestCharacteristic Write: ' + repr(value))
         self.value = value
-        pan = int(value[0])
-        tilt = int(value[1])
+        try:
+            (pan, tilt) = struct.unpack("< h h", bytes(value))
+            print(pan, tilt)
+        except Exception as err:
+            print("unpack err: {}".format(err))
+        # pan = int(value[0] )
+        # tilt = int(value[2])
         adapter.moveTo(pan, tilt)
 
 class TestDescriptor(Descriptor):
