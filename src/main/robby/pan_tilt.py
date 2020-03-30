@@ -155,18 +155,23 @@ def steps(adapter):
             time.sleep(.4)
             
 def sweep(adapter):
-    interval = 0.05
+    interval = 0.001
     adapter.setBias([ 0, 0 ])
     base = 18.28 / 4096 # ms/tick
-    min = int(0.336 / base)
-    max = int(1.336 / base)
+    def servoRange(min, max):
+        return range(int(min / base), int(max / base))
+    panRange = servoRange(0.336, 1.336)
+    tiltRange = servoRange(0, 2)
+    def sweepRange(r):
+        for pan in r:
+            adapter.moveTo(pan, 0)
+            time.sleep(interval)
+        for pan in reversed(r):
+            adapter.moveTo(pan, 0)
+            time.sleep(interval)
+
     while True:
-        for pan in range(min, max):
-            adapter.moveTo(pan, 0)
-            time.sleep(interval)
-        for pan in reversed(range(min, max)): #range(max, min, -1):
-            adapter.moveTo(pan, 0)
-            time.sleep(interval)
+        sweepRange(panRange)
 
 def getChr():
     tty.setraw(sys.stdin.fileno())
