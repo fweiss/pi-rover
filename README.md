@@ -20,7 +20,9 @@ They are highly non-linear.
 - 1.5 ms: 0 degrees (middle)
 - 2.0 ms: 90 degrees CW (right)
 
-Note: The linearity of these cheap servos is very poor.
+> The linearity of these cheap "Tower Pro" servos is very poor.
+> Going to try "Miuzei" MS-18, with reportedly better
+> linearity and no offest drift.
 
 ### PCA9685 specs
 This is actually designed for LED PWM control, but can be used for servo.
@@ -31,7 +33,12 @@ Drive capability at 5 V:
 - 25 mA sink open drain/totem pole
 - 10 mA source totem pole
 
-Internal 25 MHz oscillator.
+The internal 25 MHz oscillator is not very accurate.
+That coupled with the granularity of the scaler, pulse
+widths can not be controlled precisely. With pre scaler
+register set 121, observed 18.28 ms instead of 20 for
+50 Hz.
+
 Power on reset sets output to LOW.
 
 ## Pi Zero W basics
