@@ -2,10 +2,46 @@
 
 A POC for robotic vehicle on Rasperry Pi Zero and Python
 
+## Hardware
+- Raspberry Pi Zero W V1.1
+- Kingston SDC4/16GB Micro SD card
+- Sparkfun Pi Servo Shield - DEV-14328
+- Pan-tilt kit
+- Tower Pro Micro Servo SG90 9 g
+
+### SG90 specs
+I've found that (at least the ones I got) are rather crappy.
+They are highly non-linear.
+
+- 5 V
+- 20 ms (50 Hz) PWM base
+- Pulse width encoding:
+- 1.0 ms: -90 degrees CCW (left)
+- 1.5 ms: 0 degrees (middle)
+- 2.0 ms: 90 degrees CW (right)
+
+Note: The linearity of these cheap servos is very poor.
+
+### PCA9685 specs
+This is actually designed for LED PWM control, but can be used for servo.
+It can control 16 output channels.
+PWM control for each channel is 12-bit (4096 steps).
+
+Drive capability at 5 V:
+- 25 mA sink open drain/totem pole
+- 10 mA source totem pole
+
+Internal 25 MHz oscillator.
+Power on reset sets output to LOW.
+
 ## Pi Zero W basics
 Login via ssh:
 
+``ssh root@raspberrypi0-wifi.local``
+
 ``ssh pi:raspberry@raspberry.local``
+
+> Wait about 60 s for the RPI0Z to boot up, when the green LED stops flashing.
 
 ## File sharing
 In order to use IntelliJ on Mac, set up a share.
@@ -26,37 +62,10 @@ Then cd ~/Projects/RPI/pi-rover and the project directory.
 
 Then python src/main/pan-tilt.py
 
-## Hardware
-- Raspberry Pi Zero W V1.1
-- Kingston SDC4/16GB Micro SD card
-- Sparkfun Pi Servo Shield - DEV-14328
-- Pan-tilt kit
-- Tower Pro Micro Servo SG90 9 g
-
-### SG90 specs
-5 V
-20 ms (50 Hz) PWM base
-Pulse width encoding:
-1.0 ms: -90 degrees CCW (left)
-1.5 ms: 0 degrees (middle)
-2.0 ms: 90 degrees CW (right)
-
-Note: The linearity of these cheap servos is very poor.
-
-### PCA9685 specs
-Designed for LED PWM control, but can be used for servo, for 16 output channels.
-PWM control for each channel is 12-bit (4096 steps).
-
-Drive capability at 5 V:
-- 25 mA sink open drain/totem pole
-- 10 mA source totem pole
-
-Internal 25 MHz oscillator.
-Power on reset sets output to LOW.
-
-
 ## Running pi-gpio
 This is the gpio version.
+
+> Initial development was with pi-gpio, but latest is using smbus. see src/main/robby/pan-tilt.py
 
 Update on pi:
 
@@ -158,6 +167,7 @@ The ``dbus-bt.py`` script successfully advertises, but not much else yet.
 
 > The name is "TESTADVERTISEMENT"
 
+Build the RPI SD card with [Yocto project for RPI0W](https://github.com/fweiss/yocto-rpi-vm)
 
 ## Notes
 

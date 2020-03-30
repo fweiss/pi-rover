@@ -20,8 +20,8 @@ def main():
         adapter.initialize_channels()
 
         #     interactive(adapter)
-        steps(adapter)
-    #     sweep(adapter)
+        # steps(adapter)
+        sweep(adapter)
     #     calibrate(adapter)
     except KeyboardInterrupt as err:
         bus.write_byte_data(addr, MODE2, 0) # hi-z
@@ -33,8 +33,10 @@ MODE1_AUTO_INCREMENT = 0x20
 MODE2 = 0x01
 MODE2_OUT_TOTEM = 0x04
 
+# 0xFE = ~18 ms
 PRE_SCALE = 0xfe
 
+# PCA9685 "LED" registers
 PAN_REG_ON = 0x06
 PAN_REG_OFF = 0x08
 TILT_REG_ON = 0x0a
@@ -153,15 +155,18 @@ def steps(adapter):
             time.sleep(.4)
             
 def sweep(adapter):
+    interval = 0.05
+    adapter.setBias([ 0, 0 ])
+    base = 18.28 / 4096 # ms/tick
+    min = int(0.336 / base)
+    max = int(1.336 / base)
     while True:
-        for pan in range(-100, 100):
-            print("pan: {}".format(pan))
+        for pan in range(min, max):
             adapter.moveTo(pan, 0)
-            time.sleep(.1)
-        for tilt in range(-100,100):
-            print("tilt: {}".format(pan))
-            adapter.moveTo(0, tilt)
-            time.sleep(.1)
+            time.sleep(interval)
+        for pan in range(max, min, -1):
+            adapter.moveTo(pan, 0)
+            time.sleep(interval)
 
 def getChr():
     tty.setraw(sys.stdin.fileno())
