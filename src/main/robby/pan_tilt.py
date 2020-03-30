@@ -164,7 +164,7 @@ def sweep(adapter):
         for pan in range(min, max):
             adapter.moveTo(pan, 0)
             time.sleep(interval)
-        for pan in range(max, min, -1):
+        for pan in reversed(range(min, max)): #range(max, min, -1):
             adapter.moveTo(pan, 0)
             time.sleep(interval)
 
