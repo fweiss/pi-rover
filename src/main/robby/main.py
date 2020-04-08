@@ -141,12 +141,14 @@ def main():
                                      reply_handler=register_ad_cb,
                                      error_handler=register_ad_error_cb)
 
-    mainloop.run()
-
-    ad_manager.UnregisterAdvertisement(test_advertisement)
-    print('Advertisement unregistered')
-    dbus.service.Object.remove_from_connection(test_advertisement)
-
+    try:
+        mainloop.run()
+    except KeyboardInterrupt:
+        print("keyboard interrupt")
+    finally:
+        ad_manager.UnregisterAdvertisement(test_advertisement)
+        print('Advertisement unregistered')
+        dbus.service.Object.remove_from_connection(test_advertisement)
 
 if __name__ == '__main__':
     main()
