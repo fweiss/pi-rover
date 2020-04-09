@@ -56,6 +56,8 @@ class PanTilt:
         self.addr = addr
 #         self.bias = [ 250, 300 ]
         self.bias = [ 190, 357 ]
+#         self.bias = [ 0, 357 ]
+#         self.bias = [ 210, 128 ]
     def setBias(self, bias):
         self.bias = bias
     def writeWord(self, register, value):
@@ -153,14 +155,19 @@ def steps(adapter):
         for (pan, tilt) in path0:
             adapter.moveTo(pan, tilt)
             time.sleep(.4)
-            
+
+# 0.336 ms = 75 ticks
+# 1.336 ms = 299
 def sweep(adapter):
     interval = 0.001
-    adapter.setBias([ 0, 0 ])
+    adapter.setBias([ 225, 0 ])
     base = 18.28 / 4096 # ms/tick
     def servoRange(min, max):
         return range(int(min / base), int(max / base))
-    panRange = servoRange(0.336, 1.336)
+    # panRange = servoRange(0.336, 1.336)
+    # panRange = range(75-225, 375-225)
+    panRange = range(-150, 150)
+    # panRange = range( -150, 150 )
     tiltRange = servoRange(0, 2)
     def sweepRange(r):
         for pan in r:
