@@ -55,6 +55,7 @@ class Application(dbus.service.Object):
         print('GetManagedObjects')
 
         for service in self.services:
+            print("adding service: {}".format(service.get_path()))
             response[service.get_path()] = service.get_properties()
             chrcs = service.get_characteristics()
             for chrc in chrcs:
