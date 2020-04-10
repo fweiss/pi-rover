@@ -107,6 +107,9 @@ def register_ad_error_cb(error):
     print('Failed to register advertisement: ' + str(error))
     mainloop.quit()
 
+def device_connect_cb():
+    print('device connect')
+
 def main():
     global mainloop
 
@@ -118,6 +121,9 @@ def main():
     if not adapter:
         print('GattManager1 interface not found')
         return
+
+    device = bus.get_object('org.bluez', '/hci0')
+    device.connect_to_signal('Connect', device_connect_cb)
 
     service_manager = dbus.Interface(
         bus.get_object(BLUEZ_SERVICE_NAME, adapter),
