@@ -70,9 +70,9 @@ class PanTilt:
         self.writeWord(TILT_REG_ON, 0)
         self.writeWord(TILT_REG_OFF, self.mapTilt(tilt))
     def mapPan(self, pan):
-        return pan + self.bias[0];
+        return pan - self.bias[0];
     def mapTilt(self, tilt):
-        return tilt + self.bias[1]
+        return tilt - self.bias[1]
     def initialize_channels(self):
         print(bus.read_byte_data(addr, MODE1))
         print(bus.read_byte_data(addr, MODE2))
@@ -160,7 +160,7 @@ def steps(adapter):
 # 1.336 ms = 299
 def sweep(adapter):
     interval = 0.001
-    adapter.setBias([ 225, 0 ])
+    # adapter.setBias([ 225, 0 ])
     base = 18.28 / 4096 # ms/tick
     def servoRange(min, max):
         return range(int(min / base), int(max / base))

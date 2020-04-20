@@ -188,4 +188,7 @@ Get bluez version: ``bluetoothctl --version``, currently 5.5.0
 
 Get example code, including python/dbus, from the bluez repo in kernel.org: https://git.kernel.org/pub/scm/bluetooth/bluez.git
 
-> Look in the test folder for Python  ode examples.
+> Look in the test folder for Python code examples.
+
+[A guide with Java code](http://smartspacestuff.blogspot.com/2016/02/i-got-figurin-out-dbus-bluez.html)
+

@@ -7,9 +7,9 @@ import dbus.service
 
 import array
 try:
-    from gi.repository import GObject
+  from gi.repository import GObject
 except ImportError:
-    import gobject as GObject
+  import gobject as GObject
 import sys
 
 from random import randint
@@ -24,10 +24,6 @@ DBUS_PROP_IFACE =    'org.freedesktop.DBus.Properties'
 GATT_SERVICE_IFACE = 'org.bluez.GattService1'
 GATT_CHRC_IFACE =    'org.bluez.GattCharacteristic1'
 GATT_DESC_IFACE =    'org.bluez.GattDescriptor1'
-
-LE_ADVERTISING_MANAGER_IFACE = 'org.bluez.LEAdvertisingManager1'
-LE_ADVERTISEMENT_IFACE = 'org.bluez.LEAdvertisement1'
-
 
 class InvalidArgsException(dbus.exceptions.DBusException):
     _dbus_error_name = 'org.freedesktop.DBus.Error.InvalidArgs'
@@ -96,13 +92,13 @@ class Service(dbus.service.Object):
 
     def get_properties(self):
         return {
-            GATT_SERVICE_IFACE: {
-                'UUID': self.uuid,
-                'Primary': self.primary,
-                'Characteristics': dbus.Array(
-                    self.get_characteristic_paths(),
-                    signature='o')
-            }
+                GATT_SERVICE_IFACE: {
+                        'UUID': self.uuid,
+                        'Primary': self.primary,
+                        'Characteristics': dbus.Array(
+                                self.get_characteristic_paths(),
+                                signature='o')
+                }
         }
 
     def get_path(self):
@@ -145,14 +141,14 @@ class Characteristic(dbus.service.Object):
 
     def get_properties(self):
         return {
-            GATT_CHRC_IFACE: {
-                'Service': self.service.get_path(),
-                'UUID': self.uuid,
-                'Flags': self.flags,
-                'Descriptors': dbus.Array(
-                    self.get_descriptor_paths(),
-                    signature='o')
-            }
+                GATT_CHRC_IFACE: {
+                        'Service': self.service.get_path(),
+                        'UUID': self.uuid,
+                        'Flags': self.flags,
+                        'Descriptors': dbus.Array(
+                                self.get_descriptor_paths(),
+                                signature='o')
+                }
         }
 
     def get_path(self):
@@ -180,8 +176,8 @@ class Characteristic(dbus.service.Object):
         return self.get_properties()[GATT_CHRC_IFACE]
 
     @dbus.service.method(GATT_CHRC_IFACE,
-                         in_signature='a{sv}',
-                         out_signature='ay')
+                        in_signature='a{sv}',
+                        out_signature='ay')
     def ReadValue(self, options):
         print('Default ReadValue called, returning error')
         raise NotSupportedException()
@@ -221,11 +217,11 @@ class Descriptor(dbus.service.Object):
 
     def get_properties(self):
         return {
-            GATT_DESC_IFACE: {
-                'Characteristic': self.chrc.get_path(),
-                'UUID': self.uuid,
-                'Flags': self.flags,
-            }
+                GATT_DESC_IFACE: {
+                        'Characteristic': self.chrc.get_path(),
+                        'UUID': self.uuid,
+                        'Flags': self.flags,
+                }
         }
 
     def get_path(self):
@@ -241,8 +237,8 @@ class Descriptor(dbus.service.Object):
         return self.get_properties()[GATT_DESC_IFACE]
 
     @dbus.service.method(GATT_DESC_IFACE,
-                         in_signature='a{sv}',
-                         out_signature='ay')
+                        in_signature='a{sv}',
+                        out_signature='ay')
     def ReadValue(self, options):
         print ('Default ReadValue called, returning error')
         raise NotSupportedException()
@@ -274,10 +270,10 @@ class HeartRateMeasurementChrc(Characteristic):
 
     def __init__(self, bus, index, service):
         Characteristic.__init__(
-            self, bus, index,
-            self.HR_MSRMT_UUID,
-            ['notify'],
-            service)
+                self, bus, index,
+                self.HR_MSRMT_UUID,
+                ['notify'],
+                service)
         self.notifying = False
         self.hr_ee_count = 0
 
@@ -293,7 +289,7 @@ class HeartRateMeasurementChrc(Characteristic):
             value.append(dbus.Byte((self.service.energy_expended >> 8) & 0xff))
 
         self.service.energy_expended = \
-            min(0xffff, self.service.energy_expended + 1)
+                min(0xffff, self.service.energy_expended + 1)
         self.hr_ee_count += 1
 
         print('Updating value: ' + repr(value))
@@ -332,10 +328,10 @@ class BodySensorLocationChrc(Characteristic):
 
     def __init__(self, bus, index, service):
         Characteristic.__init__(
-            self, bus, index,
-            self.BODY_SNSR_LOC_UUID,
-            ['read'],
-            service)
+                self, bus, index,
+                self.BODY_SNSR_LOC_UUID,
+                ['read'],
+                service)
 
     def ReadValue(self, options):
         # Return 'Chest' as the sensor location.
@@ -346,10 +342,10 @@ class HeartRateControlPointChrc(Characteristic):
 
     def __init__(self, bus, index, service):
         Characteristic.__init__(
-            self, bus, index,
-            self.HR_CTRL_PT_UUID,
-            ['write'],
-            service)
+                self, bus, index,
+                self.HR_CTRL_PT_UUID,
+                ['write'],
+                service)
 
     def WriteValue(self, value, options):
         print('Heart Rate Control Point WriteValue called')
@@ -389,10 +385,10 @@ class BatteryLevelCharacteristic(Characteristic):
 
     def __init__(self, bus, index, service):
         Characteristic.__init__(
-            self, bus, index,
-            self.BATTERY_LVL_UUID,
-            ['read', 'notify'],
-            service)
+                self, bus, index,
+                self.BATTERY_LVL_UUID,
+                ['read', 'notify'],
+                service)
         self.notifying = False
         self.battery_lvl = 100
         GObject.timeout_add(5000, self.drain_battery)
@@ -401,8 +397,8 @@ class BatteryLevelCharacteristic(Characteristic):
         if not self.notifying:
             return
         self.PropertiesChanged(
-            GATT_CHRC_IFACE,
-            { 'Value': [dbus.Byte(self.battery_lvl)] }, [])
+                GATT_CHRC_IFACE,
+                { 'Value': [dbus.Byte(self.battery_lvl)] }, [])
 
     def drain_battery(self):
         if not self.notifying:
@@ -459,14 +455,14 @@ class TestCharacteristic(Characteristic):
 
     def __init__(self, bus, index, service):
         Characteristic.__init__(
-            self, bus, index,
-            self.TEST_CHRC_UUID,
-            ['read', 'write', 'writable-auxiliaries'],
-            service)
+                self, bus, index,
+                self.TEST_CHRC_UUID,
+                ['read', 'write', 'writable-auxiliaries'],
+                service)
         self.value = []
         self.add_descriptor(TestDescriptor(bus, 0, self))
         self.add_descriptor(
-            CharacteristicUserDescriptionDescriptor(bus, 1, self))
+                CharacteristicUserDescriptionDescriptor(bus, 1, self))
 
     def ReadValue(self, options):
         print('TestCharacteristic Read: ' + repr(self.value))
@@ -486,14 +482,14 @@ class TestDescriptor(Descriptor):
 
     def __init__(self, bus, index, characteristic):
         Descriptor.__init__(
-            self, bus, index,
-            self.TEST_DESC_UUID,
-            ['read', 'write'],
-            characteristic)
+                self, bus, index,
+                self.TEST_DESC_UUID,
+                ['read', 'write'],
+                characteristic)
 
     def ReadValue(self, options):
         return [
-            dbus.Byte('T'), dbus.Byte('e'), dbus.Byte('s'), dbus.Byte('t')
+                dbus.Byte('T'), dbus.Byte('e'), dbus.Byte('s'), dbus.Byte('t')
         ]
 
 
@@ -509,10 +505,10 @@ class CharacteristicUserDescriptionDescriptor(Descriptor):
         self.value = array.array('B', b'This is a characteristic for testing')
         self.value = self.value.tolist()
         Descriptor.__init__(
-            self, bus, index,
-            self.CUD_UUID,
-            ['read', 'write'],
-            characteristic)
+                self, bus, index,
+                self.CUD_UUID,
+                ['read', 'write'],
+                characteristic)
 
     def ReadValue(self, options):
         return self.value
@@ -531,14 +527,14 @@ class TestEncryptCharacteristic(Characteristic):
 
     def __init__(self, bus, index, service):
         Characteristic.__init__(
-            self, bus, index,
-            self.TEST_CHRC_UUID,
-            ['encrypt-read', 'encrypt-write'],
-            service)
+                self, bus, index,
+                self.TEST_CHRC_UUID,
+                ['encrypt-read', 'encrypt-write'],
+                service)
         self.value = []
         self.add_descriptor(TestEncryptDescriptor(bus, 2, self))
         self.add_descriptor(
-            CharacteristicUserDescriptionDescriptor(bus, 3, self))
+                CharacteristicUserDescriptionDescriptor(bus, 3, self))
 
     def ReadValue(self, options):
         print('TestEncryptCharacteristic Read: ' + repr(self.value))
@@ -557,14 +553,14 @@ class TestEncryptDescriptor(Descriptor):
 
     def __init__(self, bus, index, characteristic):
         Descriptor.__init__(
-            self, bus, index,
-            self.TEST_DESC_UUID,
-            ['encrypt-read', 'encrypt-write'],
-            characteristic)
+                self, bus, index,
+                self.TEST_DESC_UUID,
+                ['encrypt-read', 'encrypt-write'],
+                characteristic)
 
     def ReadValue(self, options):
         return [
-            dbus.Byte('T'), dbus.Byte('e'), dbus.Byte('s'), dbus.Byte('t')
+                dbus.Byte('T'), dbus.Byte('e'), dbus.Byte('s'), dbus.Byte('t')
         ]
 
 
@@ -577,14 +573,14 @@ class TestSecureCharacteristic(Characteristic):
 
     def __init__(self, bus, index, service):
         Characteristic.__init__(
-            self, bus, index,
-            self.TEST_CHRC_UUID,
-            ['secure-read', 'secure-write'],
-            service)
+                self, bus, index,
+                self.TEST_CHRC_UUID,
+                ['secure-read', 'secure-write'],
+                service)
         self.value = []
         self.add_descriptor(TestSecureDescriptor(bus, 2, self))
         self.add_descriptor(
-            CharacteristicUserDescriptionDescriptor(bus, 3, self))
+                CharacteristicUserDescriptionDescriptor(bus, 3, self))
 
     def ReadValue(self, options):
         print('TestSecureCharacteristic Read: ' + repr(self.value))
@@ -604,14 +600,14 @@ class TestSecureDescriptor(Descriptor):
 
     def __init__(self, bus, index, characteristic):
         Descriptor.__init__(
-            self, bus, index,
-            self.TEST_DESC_UUID,
-            ['secure-read', 'secure-write'],
-            characteristic)
+                self, bus, index,
+                self.TEST_DESC_UUID,
+                ['secure-read', 'secure-write'],
+                characteristic)
 
     def ReadValue(self, options):
         return [
-            dbus.Byte('T'), dbus.Byte('e'), dbus.Byte('s'), dbus.Byte('t')
+                dbus.Byte('T'), dbus.Byte('e'), dbus.Byte('s'), dbus.Byte('t')
         ]
 
 def register_app_cb():
@@ -634,117 +630,6 @@ def find_adapter(bus):
 
     return None
 
-class Advertisement(dbus.service.Object):
-    PATH_BASE = '/org/bluez/example/advertisement'
-
-    def __init__(self, bus, index, advertising_type):
-        self.path = self.PATH_BASE + str(index)
-        self.bus = bus
-        self.ad_type = advertising_type
-        self.service_uuids = None
-        self.manufacturer_data = None
-        self.solicit_uuids = None
-        self.service_data = None
-        self.local_name = None
-        self.include_tx_power = None
-        self.data = None
-        dbus.service.Object.__init__(self, bus, self.path)
-
-    def get_properties(self):
-        properties = dict()
-        properties['Type'] = self.ad_type
-        if self.service_uuids is not None:
-            properties['ServiceUUIDs'] = dbus.Array(self.service_uuids,
-                                                    signature='s')
-        if self.solicit_uuids is not None:
-            properties['SolicitUUIDs'] = dbus.Array(self.solicit_uuids,
-                                                    signature='s')
-        if self.manufacturer_data is not None:
-            properties['ManufacturerData'] = dbus.Dictionary(
-                self.manufacturer_data, signature='qv')
-        if self.service_data is not None:
-            properties['ServiceData'] = dbus.Dictionary(self.service_data,
-                                                        signature='sv')
-        if self.local_name is not None:
-            properties['LocalName'] = dbus.String(self.local_name)
-        if self.include_tx_power is not None:
-            properties['IncludeTxPower'] = dbus.Boolean(self.include_tx_power)
-
-        if self.data is not None:
-            properties['Data'] = dbus.Dictionary(
-                self.data, signature='yv')
-        return {LE_ADVERTISEMENT_IFACE: properties}
-
-    def get_path(self):
-        return dbus.ObjectPath(self.path)
-
-    def add_service_uuid(self, uuid):
-        if not self.service_uuids:
-            self.service_uuids = []
-        self.service_uuids.append(uuid)
-
-    def add_solicit_uuid(self, uuid):
-        if not self.solicit_uuids:
-            self.solicit_uuids = []
-        self.solicit_uuids.append(uuid)
-
-    def add_manufacturer_data(self, manuf_code, data):
-        if not self.manufacturer_data:
-            self.manufacturer_data = dbus.Dictionary({}, signature='qv')
-        self.manufacturer_data[manuf_code] = dbus.Array(data, signature='y')
-
-    def add_service_data(self, uuid, data):
-        if not self.service_data:
-            self.service_data = dbus.Dictionary({}, signature='sv')
-        self.service_data[uuid] = dbus.Array(data, signature='y')
-
-    def add_local_name(self, name):
-        if not self.local_name:
-            self.local_name = ""
-        self.local_name = dbus.String(name)
-
-    def add_data(self, ad_type, data):
-        if not self.data:
-            self.data = dbus.Dictionary({}, signature='yv')
-        self.data[ad_type] = dbus.Array(data, signature='y')
-
-    @dbus.service.method(DBUS_PROP_IFACE,
-                         in_signature='s',
-                         out_signature='a{sv}')
-    def GetAll(self, interface):
-        print('GetAll')
-        if interface != LE_ADVERTISEMENT_IFACE:
-            raise InvalidArgsException()
-        print('returning props')
-        return self.get_properties()[LE_ADVERTISEMENT_IFACE]
-
-    @dbus.service.method(LE_ADVERTISEMENT_IFACE,
-                         in_signature='',
-                         out_signature='')
-    def Release(self):
-        print('%s: Released!' % self.path)
-
-
-class TestAdvertisement(Advertisement):
-
-    def __init__(self, bus, index):
-        Advertisement.__init__(self, bus, index, 'peripheral')
-        self.add_service_uuid('180D')
-        self.add_service_uuid('180F')
-        self.add_manufacturer_data(0xffff, [0x00, 0x01, 0x02, 0x03, 0x04])
-        self.add_service_data('9999', [0x00, 0x01, 0x02, 0x03, 0x04])
-        self.add_local_name('Rover')
-        self.include_tx_power = True
-        self.add_data(0x26, [0x01, 0x01, 0x00])
-
-def register_ad_cb():
-    print('Advertisement registered')
-
-
-def register_ad_error_cb(error):
-    print('Failed to register advertisement: ' + str(error))
-    mainloop.quit()
-
 def main():
     global mainloop
 
@@ -757,28 +642,19 @@ def main():
         print('GattManager1 interface not found')
         return
 
-    ad_manager = dbus.Interface(bus.get_object(BLUEZ_SERVICE_NAME, adapter),
-                                LE_ADVERTISING_MANAGER_IFACE)
-
     service_manager = dbus.Interface(
-        bus.get_object(BLUEZ_SERVICE_NAME, adapter),
-        GATT_MANAGER_IFACE)
+            bus.get_object(BLUEZ_SERVICE_NAME, adapter),
+            GATT_MANAGER_IFACE)
 
     app = Application(bus)
-
-    adv = TestAdvertisement(bus, 0)
 
     mainloop = GObject.MainLoop()
 
     print('Registering GATT application...')
 
     service_manager.RegisterApplication(app.get_path(), {},
-                                        reply_handler=register_app_cb,
-                                        error_handler=register_app_error_cb)
-
-    ad_manager.RegisterAdvertisement(adv.get_path(), {},
-                                     reply_handler=register_ad_cb,
-                                     error_handler=register_ad_error_cb)
+                                    reply_handler=register_app_cb,
+                                    error_handler=register_app_error_cb)
 
     mainloop.run()
 

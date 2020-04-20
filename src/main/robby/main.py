@@ -107,8 +107,11 @@ def register_ad_error_cb(error):
     print('Failed to register advertisement: ' + str(error))
     mainloop.quit()
 
-def device_connect_cb():
+def device_connect_cb(prop):
     print('device connect')
+
+def interfaces_removed_cb(object_path, interfaces):
+    print('Service was removed')
 
 def main():
     global mainloop
@@ -122,8 +125,16 @@ def main():
         print('GattManager1 interface not found')
         return
 
-    device = bus.get_object('org.bluez', '/hci0')
-    device.connect_to_signal('Connect', device_connect_cb)
+    # device = bus.get_object('org.bluez', '/hci0')
+    # device.connect_to_signal('connect', device_connect_cb)
+    # bus.add_signal_receiver(device_connect_cb, bus_name="org.bluez", signal_name="PropertyChanged", dbus_interface="org.bluez.Device", path_keyword="path", interface_keyword="interface")
+
+    # om = dbus.Interface(bus.get_object(BLUEZ_SERVICE_NAME, '/'), DBUS_OM_IFACE)
+    # om.connect_to_signal('InterfacesRemoved', interfaces_removed_cb)
+    # om.connect_to_signal('RemoteDeviceFound', interfaces_removed_cb)
+
+    om = dbus.Interface(bus.get_object(BLUEZ_SERVICE_NAME, '/'), DBUS_PROP_IFACE)
+    om.connect_to_signal('PropertiesChanged', device_connect_cb)
 
     service_manager = dbus.Interface(
         bus.get_object(BLUEZ_SERVICE_NAME, adapter),
