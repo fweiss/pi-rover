@@ -55,9 +55,9 @@ class PanTilt:
         self.bus = bus
         self.addr = addr
 #         self.bias = [ 250, 300 ]
-        self.bias = [ 190, 357 ]
-#         self.bias = [ 0, 357 ]
-#         self.bias = [ 210, 128 ]
+
+#         self.bias = [ 190, 357 ] # TowerPro
+        self.bias = [335, 300 ] # Miuzei MS18
     def setBias(self, bias):
         self.bias = bias
     def writeWord(self, register, value):
@@ -65,14 +65,15 @@ class PanTilt:
     def moveTo(self, pan, tilt):
         global PAN_REG_OFF, PAN_REG_ON, TILT_REG_ON, TILT_REG_OFF
         print("move: {} {}".format(pan, tilt))
+        print(self.mapPan(pan))
         self.writeWord(PAN_REG_ON, 0)
         self.writeWord(PAN_REG_OFF, self.mapPan(pan))
         self.writeWord(TILT_REG_ON, 0)
         self.writeWord(TILT_REG_OFF, self.mapTilt(tilt))
     def mapPan(self, pan):
-        return pan - self.bias[0];
+        return self.bias[0] - pan
     def mapTilt(self, tilt):
-        return tilt - self.bias[1]
+        return self.bias[1] - tilt
     def initialize_channels(self):
         print(bus.read_byte_data(addr, MODE1))
         print(bus.read_byte_data(addr, MODE2))
@@ -158,16 +159,19 @@ def steps(adapter):
 
 # 0.336 ms = 75 ticks
 # 1.336 ms = 299
-def sweep(adapter):
-    interval = 0.001
-    # adapter.setBias([ 225, 0 ])
+# initially tried to use ms as model which was usefull for calibration
+# inexpensive servos are just not accurate to provide repeatable angular displacements
+def servoRange(min, max):
     base = 18.28 / 4096 # ms/tick
-    def servoRange(min, max):
-        return range(int(min / base), int(max / base))
+    return range(int(min / base), int(max / base))
+
+def sweep(adapter):
+    interval = 0.001 # driver can't do much faster, but hardware sweep can
+    # adapter.setBias([ 225, 0 ])
     # panRange = servoRange(0.336, 1.336)
     # panRange = range(75-225, 375-225)
-    panRange = range(-150, 150)
-    # panRange = range( -150, 150 )
+    # panRange = range(-150, 150)
+    panRange = range( -200, 200 )
     tiltRange = servoRange(0, 2)
     def sweepRange(r):
         for pan in r:
