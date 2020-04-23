@@ -100,11 +100,14 @@ class RoverAdvertisement(Advertisement):
 
 
 def register_ad_cb():
+    global advertisementRegistered
     print('Advertisement registered')
-
+    advertisementRegistered = True
 
 def register_ad_error_cb(error):
-    print('Failed to register advertisement: ' + str(error))
+    global advertisementRegistered
+    print('RegisterAdvertisement: {}'.format(str(error)))
+    advertisementRegistered = False
     mainloop.quit()
 
 def device_connect_cb(prop):
@@ -133,8 +136,8 @@ def main():
     # om.connect_to_signal('InterfacesRemoved', interfaces_removed_cb)
     # om.connect_to_signal('RemoteDeviceFound', interfaces_removed_cb)
 
-    om = dbus.Interface(bus.get_object(BLUEZ_SERVICE_NAME, '/'), DBUS_PROP_IFACE)
-    om.connect_to_signal('PropertiesChanged', device_connect_cb)
+    # om = dbus.Interface(bus.get_object(BLUEZ_SERVICE_NAME, '/'), DBUS_PROP_IFACE)
+    # om.connect_to_signal('PropertiesChanged', device_connect_cb)
 
     service_manager = dbus.Interface(
         bus.get_object(BLUEZ_SERVICE_NAME, adapter),
@@ -164,9 +167,11 @@ def main():
     except KeyboardInterrupt:
         print("keyboard interrupt")
     finally:
-        ad_manager.UnregisterAdvertisement(test_advertisement)
-        print('Advertisement unregistered')
-        dbus.service.Object.remove_from_connection(test_advertisement)
+        global advertisementRegistered
+        if advertisementRegistered:
+            ad_manager.UnregisterAdvertisement(test_advertisement)
+            print('Advertisement unregistered')
+            dbus.service.Object.remove_from_connection(test_advertisement)
 
 if __name__ == '__main__':
     main()
