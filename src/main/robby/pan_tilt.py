@@ -57,7 +57,7 @@ class PanTilt:
 #         self.bias = [ 250, 300 ]
 
 #         self.bias = [ 190, 357 ] # TowerPro
-        self.bias = [335, 300 ] # Miuzei MS18
+        self.bias = [ 295, 334 ] # Miuzei MS18
     def setBias(self, bias):
         self.bias = bias
     def writeWord(self, register, value):

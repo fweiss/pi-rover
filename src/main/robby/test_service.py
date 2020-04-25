@@ -20,7 +20,7 @@ addr = 0x40
 bus = smbus.SMBus(I2C_BUS_NUMBER)
 adapter = PanTilt(bus, addr)
 adapter.initialize_channels()
-adapter.setBias([ 225, 225 ])
+# adapter.setBias([ 225, 225 ])
 print("pan tilt initialized")
 
 class TestService(Service):
