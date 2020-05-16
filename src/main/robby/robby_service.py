@@ -23,7 +23,7 @@ adapter.initialize_channels()
 # adapter.setBias([ 225, 225 ])
 print("pan tilt initialized")
 
-class TestService(Service):
+class RobbyService(Service):
     """
     Dummy test service that provides characteristics and descriptors that
     exercise various API functionality.
