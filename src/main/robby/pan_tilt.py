@@ -64,8 +64,7 @@ class PanTilt:
         self.bus.write_word_data(self.addr, register, value)
     def moveTo(self, pan, tilt):
         global PAN_REG_OFF, PAN_REG_ON, TILT_REG_ON, TILT_REG_OFF
-        print("move: {} {}".format(pan, tilt))
-        print(self.mapPan(pan))
+        # print("move: {} {}".format(pan, tilt))
         self.writeWord(PAN_REG_ON, 0)
         self.writeWord(PAN_REG_OFF, self.mapPan(pan))
         self.writeWord(TILT_REG_ON, 0)
@@ -171,7 +170,7 @@ def sweep(adapter):
     # panRange = servoRange(0.336, 1.336)
     # panRange = range(75-225, 375-225)
     # panRange = range(-150, 150)
-    panRange = range( -200, 200 )
+    panRange = range( -180, 180 )
     tiltRange = servoRange(0, 2)
     def sweepRange(r):
         for pan in r:

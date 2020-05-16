@@ -63,11 +63,11 @@ class TestCharacteristic(Characteristic):
     # assume little endian order
     # pan and tilt are each 16 bits, but range is only 12 bits
     def WriteValue(self, value, options):
-        print('TestCharacteristic Write: ' + repr(value))
+        # print('TestCharacteristic Write: ' + repr(value))
         self.value = value
         try:
             (pan, tilt) = struct.unpack("< h h", bytes(value))
-            print(pan, tilt)
+            # print(pan, tilt)
         except Exception as err:
             print("unpack err: {}".format(err))
         # pan = int(value[0] )
