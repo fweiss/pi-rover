@@ -1,6 +1,15 @@
 # pi-rover
+A POC for a robotic vehicle on Rasperry Pi Zero and Python
 
-A POC for robotic vehicle on Rasperry Pi Zero and Python
+There are two subprojects that have been developed herein:
+- rover - a four-wheeled vehicle
+- robby - a 2DOF robot arm
+
+The vehicle was developed first. The intention was kind of to include
+a camera that could be robotically pan and tilted to survey the current location
+of the vehicle and in the future provide CV to navigate the vehicle.
+
+These aims diverged a bit and this repo is a bit mixed up.
 
 ## Hardware
 - Raspberry Pi Zero W V1.1
@@ -25,7 +34,7 @@ They are highly non-linear.
 > linearity and no offest drift.
 
 ### PCA9685 specs
-This is actually designed for LED PWM control, but can be used for servo.
+This is actually designed for LED PWM control, but can be used for servos.
 It can control 16 output channels.
 PWM control for each channel is 12-bit (4096 steps).
 
