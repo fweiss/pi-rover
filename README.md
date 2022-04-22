@@ -75,22 +75,6 @@ RPi.GPIO uses software PWM
 
 https://rpitips.com/python-libraries-pigpio/
 
-## Wiring
-On Pi Zero, the two outermost pins near the SD card are +5V
-
-CK1122 to Pi Zero
-
-| GND | BLACK  | GND06  |
-| +5V | RED    | 5V02   |
-| IN1 | ORANGE | GPIO26 |
-| ENA | YELLOW | GPIO19 |
-| IN2 | GREEN  | GPIO13 |
-| CSA | BLUE   | NC     |
-| IN3 | VIOLET | GPIO23
-| ENB | GRAY   | GPIO18 |
-| IN4 | WHITE  | GPIO24 |
-| CSB | BROWN  | NC     |
-
 ## Raspberry Pi
 Well, it's kind of neat to have a full OS, but there are some downsides:
 
@@ -153,5 +137,10 @@ PWM prescale of 121 results in 54.6 Hz
 ### Notes
 
 Not remote: https://projects.raspberrypi.org/en/projects/getting-started-with-picamera
+
+## Issues
+
+### Can't connect to pigpio at localhost(8888)
+``sudo pigpiod``
 
 

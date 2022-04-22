@@ -10,8 +10,8 @@ PIN_FWD_A = 26
 PIN_REV_A = 13
 
 PIN_PWM_B = 18
-PIN_FWD_B = 24 #23
-PIN_REV_B = 23 #24
+PIN_FWD_B = 24
+PIN_REV_B = 23
 
 pi.set_mode(PIN_PWM_A, pigpio.OUTPUT)
 pi.set_mode(PIN_FWD_A, pigpio.OUTPUT)
@@ -45,13 +45,14 @@ pi.set_PWM_range(PIN_PWM_B, 100)
 dir = 0
 
 while True:
+    print("direction {}".format(dir))
     direction(dir)
     dir = 0 if dir else 1
     for i in range(5, 100, 5):
-        pi.set_PWM_dutycycle(PIN_PWM_A, i)
-        pi.set_PWM_dutycycle(PIN_PWM_B, i * 0.70)
+        pi.set_PWM_dutycycle(PIN_PWM_A, i * 0.5)
+        pi.set_PWM_dutycycle(PIN_PWM_B, i * 0.5)
         time.sleep(0.1)
     for i in range(100, 5, -5):
-        pi.set_PWM_dutycycle(PIN_PWM_A, i)
-        pi.set_PWM_dutycycle(PIN_PWM_B, i * 0.70)
+        pi.set_PWM_dutycycle(PIN_PWM_A, i * 0.5)
+        pi.set_PWM_dutycycle(PIN_PWM_B, i * 0.5)
         time.sleep(0.1)
