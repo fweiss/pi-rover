@@ -1,0 +1,17 @@
+body {
+    background-color: grey;
+}
+.gate {
+    position: relative;
+    width: 10em;
+    height: 10em;
+    border: 2px solid black;
+    margin: auto;
+    background-color: white;
+}
+.puck {
+    position: absolute;
+    width: 2em;
+    height: 2em;
+    background-color: red;
+}

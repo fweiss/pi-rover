@@ -16,12 +16,12 @@ bus = smbus.SMBus(I2C_BUS_NUMBER)
 
 def main():
     try: 
-        initialize_channels()
         adapter = PanTilt(bus, addr)
-        
-    #     interactive(adapter)
-        steps(adapter)
-    #     sweep(adapter)
+        adapter.initialize_channels()
+
+        #     interactive(adapter)
+        # steps(adapter)
+        sweep(adapter)
     #     calibrate(adapter)
     except KeyboardInterrupt as err:
         bus.write_byte_data(addr, MODE2, 0) # hi-z
@@ -33,8 +33,10 @@ MODE1_AUTO_INCREMENT = 0x20
 MODE2 = 0x01
 MODE2_OUT_TOTEM = 0x04
 
+# 0xFE = ~18 ms
 PRE_SCALE = 0xfe
 
+# PCA9685 "LED" registers
 PAN_REG_ON = 0x06
 PAN_REG_OFF = 0x08
 TILT_REG_ON = 0x0a
@@ -53,33 +55,35 @@ class PanTilt:
         self.bus = bus
         self.addr = addr
 #         self.bias = [ 250, 300 ]
-        self.bias = [ 190, 357 ]
+
+#         self.bias = [ 190, 357 ] # TowerPro
+        self.bias = [ 295, 334 ] # Miuzei MS18
     def setBias(self, bias):
         self.bias = bias
     def writeWord(self, register, value):
         self.bus.write_word_data(self.addr, register, value)
     def moveTo(self, pan, tilt):
         global PAN_REG_OFF, PAN_REG_ON, TILT_REG_ON, TILT_REG_OFF
+        # print("move: {} {}".format(pan, tilt))
         self.writeWord(PAN_REG_ON, 0)
         self.writeWord(PAN_REG_OFF, self.mapPan(pan))
         self.writeWord(TILT_REG_ON, 0)
         self.writeWord(TILT_REG_OFF, self.mapTilt(tilt))
     def mapPan(self, pan):
-        return pan + self.bias[0];
+        return self.bias[0] - pan
     def mapTilt(self, tilt):
-        return tilt + self.bias[1]
+        return self.bias[1] - tilt
+    def initialize_channels(self):
+        print(bus.read_byte_data(addr, MODE1))
+        print(bus.read_byte_data(addr, MODE2))
 
-def initialize_channels():
-    print(bus.read_byte_data(addr, MODE1))
-    print(bus.read_byte_data(addr, MODE2))
-    
-    bus.write_byte_data(addr, MODE1, 0x10)
-    bus.write_byte_data(addr, PRE_SCALE, PWM_50HZ)
-    bus.write_byte_data(addr, MODE1, MODE1_AUTO_INCREMENT) # because we'll be using bus.write.word_data
-    
-    print(bus.read_byte_data(addr, MODE1))
-    
-    bus.write_byte_data(addr, MODE2, MODE2_OUT_TOTEM)
+        bus.write_byte_data(addr, MODE1, 0x10)
+        bus.write_byte_data(addr, PRE_SCALE, PWM_50HZ)
+        bus.write_byte_data(addr, MODE1, MODE1_AUTO_INCREMENT) # because we'll be using bus.write.word_data
+
+        print(bus.read_byte_data(addr, MODE1))
+
+        bus.write_byte_data(addr, MODE2, MODE2_OUT_TOTEM)
 
 def pulse_width(off):
     start = bus.read_word_data(addr, PAN_REG_ON)
@@ -151,17 +155,33 @@ def steps(adapter):
         for (pan, tilt) in path0:
             adapter.moveTo(pan, tilt)
             time.sleep(.4)
-            
+
+# 0.336 ms = 75 ticks
+# 1.336 ms = 299
+# initially tried to use ms as model which was usefull for calibration
+# inexpensive servos are just not accurate to provide repeatable angular displacements
+def servoRange(min, max):
+    base = 18.28 / 4096 # ms/tick
+    return range(int(min / base), int(max / base))
+
 def sweep(adapter):
-    while True:
-        for pan in range(-100, 100):
-            print("pan: {}".format(pan))
+    interval = 0.001 # driver can't do much faster, but hardware sweep can
+    # adapter.setBias([ 225, 0 ])
+    # panRange = servoRange(0.336, 1.336)
+    # panRange = range(75-225, 375-225)
+    # panRange = range(-150, 150)
+    panRange = range( -180, 180 )
+    tiltRange = servoRange(0, 2)
+    def sweepRange(r):
+        for pan in r:
             adapter.moveTo(pan, 0)
-            time.sleep(.1)
-        for tilt in range(-100,100):
-            print("tilt: {}".format(pan))
-            adapter.moveTo(0, tilt)
-            time.sleep(.1)
+            time.sleep(interval)
+        for pan in reversed(r):
+            adapter.moveTo(pan, 0)
+            time.sleep(interval)
+
+    while True:
+        sweepRange(panRange)
 
 def getChr():
     tty.setraw(sys.stdin.fileno())
@@ -170,4 +190,7 @@ def getChr():
     if ord(chr) == 3: # ETX
         exit(1)
     return chr
-main()
+
+if __name__ == '__main__':
+    main()
+

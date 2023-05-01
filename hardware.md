@@ -55,3 +55,34 @@ This motor with EMC, anti-interference ability. SCM is a non-interference. EMC c
 - battery was 6.88 V no load
 - battery dropped below 5 V under load
 - fresh batteries, solid 8 V
+
+## Preserved
+
+## Hardware
+- Raspberry Pi Zero W V1.1
+- Kingston SDC4/16GB Micro SD card
+- Sparkfun Pi Servo Shield - DEV-14328
+- Pan-tilt kit
+- Tower Pro Micro Servo SG90 9 g
+
+### SG90 specs
+5 V
+20 ms (50 Hz) PWM base
+Pulse width encoding:
+1.0 ms: -90 degrees CCW (left)
+1.5 ms: 0 degrees (middle)
+2.0 ms: 90 degrees CW (right)
+
+> The linearity of these cheap servos is very poor.
+
+### PCA9685 specs
+Designed for LED PWM control, but can be used for servo, for 16 output channels.
+PWM control for each channel is 12-bit (4096 steps).
+
+Drive capability at 5 V:
+- 25 mA sink open drain/totem pole
+- 10 mA source totem pole
+
+Internal 25 MHz oscillator.
+Power on reset sets output to LOW.
+
