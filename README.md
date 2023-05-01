@@ -9,6 +9,77 @@ The vehicle was developed first. The intention was kind of to include
 a camera that could be robotically pan and tilted to survey the current location
 of the vehicle and in the future provide CV to navigate the vehicle.
 
+The vehicle was developed first. The intention was kind of to include
+a camera that could be robotically pan and tilted to survey the current location
+of the vehicle and in the future provide CV to navigate the vehicle.
+
+These aims diverged a bit and this repo is a bit mixed up.
+
+## Hardware
+- Raspberry Pi Zero W V1.1
+- Kingston SDC4/16GB Micro SD card
+- Sparkfun Pi Servo Shield - DEV-14328
+- Pan-tilt kit
+- Tower Pro Micro Servo SG90 9 g
+
+### SG90 specs
+I've found that (at least the ones I got) are rather crappy.
+They are highly non-linear.
+
+- 5 V
+- 20 ms (50 Hz) PWM base
+- Pulse width encoding:
+- 1.0 ms: -90 degrees CCW (left)
+- 1.5 ms: 0 degrees (middle)
+- 2.0 ms: 90 degrees CW (right)
+
+> The linearity of these cheap "Tower Pro" servos is very poor.
+> Going to try "Miuzei" MS-18, with reportedly better
+> linearity and no offest drift.
+
+### PCA9685 specs
+This is actually designed for LED PWM control, but can be used for servos.
+It can control 16 output channels.
+PWM control for each channel is 12-bit (4096 steps).
+
+Drive capability at 5 V:
+- 25 mA sink open drain/totem pole
+- 10 mA source totem pole
+
+The internal 25 MHz oscillator is not very accurate.
+That coupled with the granularity of the scaler, pulse
+widths can not be controlled precisely. With pre scaler
+register set 121, observed 18.28 ms instead of 20 for
+50 Hz.
+
+Power on reset sets output to LOW.
+
+## Pi Zero W basics
+Login via ssh:
+
+``ssh root@raspberrypi0-wifi.local``
+
+``ssh pi:raspberry@raspberry.local``
+
+> Wait about 60 s for the RPI0Z to boot up, when the green LED stops flashing.
+
+## File sharing
+In order to use IntelliJ on Mac, set up a share.
+
+In Mac File Sharing > Options, need to:
+ - allow RPI filder to be shared
+ - allow user for Windows File Sharing
+
+Tip: copy the following to /home/pi/connect-mac:
+
+sudo mount -t cifs //Franks-MacBook-Pro.local/RPI Projects/RPI -o user=frankw,uid=pi
+
+Determine OS X hostname: ``hostname -a``
+
+Then on Pi, ls ~/Projects/RPI will show empty directories.
+
+Then cd ~/Projects/RPI/pi-rover and the project directory.
+
 These aims diverged a bit and this repo is a bit mixed up.
 
 ## Hardware
